@@ -57,6 +57,7 @@ function searchOnce(keyword, location, radius) {
     ps.keywordSearch(
       keyword,
       (data, status) => {
+        console.log(`[Places] "${keyword}" radius=${radius}m → status=${status}, count=${data?.length || 0}`);
         if (status !== window.kakao.maps.services.Status.OK) {
           resolve([]);
           return;
@@ -76,6 +77,41 @@ function searchOnce(keyword, location, radius) {
         radius,
         sort: window.kakao.maps.services.SortBy.DISTANCE,
         size: 15,
+      }
+    );
+  });
+}
+
+// 카테고리(음식점)로 근처 검색
+function categorySearch(location, radius) {
+  return new Promise((resolve) => {
+    const ps = new window.kakao.maps.services.Places();
+    const coords = new window.kakao.maps.LatLng(location.lat, location.lng);
+
+    ps.categorySearch(
+      'FD6',
+      (data, status) => {
+        console.log(`[Places] FD6 category radius=${radius}m → status=${status}, count=${data?.length || 0}`);
+        if (status !== window.kakao.maps.services.Status.OK) {
+          resolve([]);
+          return;
+        }
+        const places = data.map((p) => ({
+          name: p.place_name,
+          address: p.road_address_name || p.address_name,
+          distance: p.distance ? `${p.distance}m` : '',
+          phone: p.phone || '',
+          url: p.place_url || '',
+          category: p.category_name || '',
+        }));
+        resolve(places);
+      },
+      {
+        location: coords,
+        radius,
+        sort: window.kakao.maps.services.SortBy.DISTANCE,
+        size: 15,
+        useMapBounds: false,
       }
     );
   });
@@ -109,6 +145,10 @@ export async function searchNearbyPlaces(keyword, location) {
     results = await searchOnce(simpler, location, 5000);
     if (results.length > 0) return results;
   }
+
+  // 전략 5: 카테고리 검색 (그냥 음식점)
+  results = await categorySearch(location, 3000);
+  if (results.length > 0) return results;
 
   return [];
 }
