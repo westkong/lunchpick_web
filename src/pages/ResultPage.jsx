@@ -1,46 +1,13 @@
-// 추천 결과 화면이에요 - 메뉴 1개 추천 + 근처 음식점 표시
+// 추천 결과 화면이에요 - 메뉴 1개 추천
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { pickMultiple } from '../services/recommendationService';
 import { addToHistory } from '../services/historyService';
-import { getCurrentPosition, searchNearbyPlaces } from '../services/placeService';
 import NavBar from '../components/NavBar';
 
 export default function ResultPage({ criteria, candidates, picks: initialPicks, onBack, onHome }) {
   const [picks, setPicks] = useState(initialPicks);
   const [chosenName, setChosenName] = useState(null);
-  const [nearbyPlace, setNearbyPlace] = useState(null);   // 근처 음식점 1개
-  const [placeLoading, setPlaceLoading] = useState(false);
-  const [placeError, setPlaceError] = useState(null);
-
-  // 추천 결과가 바뀔 때마다 근처 음식점 자동 검색
-  useEffect(() => {
-    if (picks.length > 0) {
-      findNearbyPlace(picks[0].name);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picks]);
-
-  async function findNearbyPlace(menuName) {
-    setPlaceLoading(true);
-    setPlaceError(null);
-    setNearbyPlace(null);
-    try {
-      const location = await getCurrentPosition();
-      const places = await searchNearbyPlaces(menuName, location);
-      if (places.length > 0) {
-        // 가까운 순 상위 5개 중 랜덤 1개
-        const top = places.slice(0, 5);
-        const pick = top[Math.floor(Math.random() * top.length)];
-        setNearbyPlace(pick);
-      } else {
-        setPlaceError('근처에 관련 음식점을 못 찾았어요');
-      }
-    } catch (err) {
-      setPlaceError(err.message || '위치 정보를 가져올 수 없어요');
-    }
-    setPlaceLoading(false);
-  }
 
   function handleReroll() {
     const newPicks = pickMultiple(candidates, 1);
@@ -78,15 +45,6 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
               />
             ))}
           </div>
-
-          {/* 근처 음식점 정보 */}
-          <NearbyPlaceCard
-            place={nearbyPlace}
-            loading={placeLoading}
-            error={placeError}
-            menuName={picks[0]?.name}
-            onRetry={() => findNearbyPlace(picks[0]?.name)}
-          />
 
           <button
             style={{ ...styles.rerollButton, opacity: candidates.length > picks.length ? 1 : 0.4 }}
@@ -142,52 +100,6 @@ function MenuCard({ menu, isChosen, isDimmed, onChoose }) {
       >
         {isChosen ? '✓ 선택' : '이거!'}
       </button>
-    </div>
-  );
-}
-
-// 근처 음식점 카드
-function NearbyPlaceCard({ place, loading, error, menuName, onRetry }) {
-  if (loading) {
-    return (
-      <div style={styles.placeCard}>
-        <p style={styles.placeTitle}>📍 근처 음식점 찾는 중...</p>
-        <p style={styles.placeLoading}>위치 정보를 가져오고 있어요</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={styles.placeCard}>
-        <p style={styles.placeTitle}>📍 근처 음식점</p>
-        <p style={styles.placeError}>{error}</p>
-        <button style={styles.retryBtn} onClick={onRetry}>다시 검색</button>
-      </div>
-    );
-  }
-
-  if (!place) return null;
-
-  return (
-    <div style={styles.placeCard}>
-      <p style={styles.placeTitle}>📍 근처 추천 음식점</p>
-      <div style={styles.placeInfo}>
-        <p style={styles.placeName}>{place.name}</p>
-        <p style={styles.placeAddress}>{place.address}</p>
-        <div style={styles.placeRow}>
-          {place.distance && <span style={styles.placeBadge}>🚶 {place.distance}</span>}
-          {place.phone && <span style={styles.placePhone}>📞 {place.phone}</span>}
-        </div>
-        {place.url && (
-          <button
-            style={styles.placeLink}
-            onClick={() => window.open(place.url, '_blank')}
-          >
-            🗺️ 카카오맵에서 보기
-          </button>
-        )}
-      </div>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { CATEGORIES, ALL_CATEGORY, PRICE_MIN, PRICE_MAX } from '../data/menuData';
 import { filterMenus, pickMultiple } from '../services/recommendationService';
 import { getRecentlyEatenNames } from '../services/historyService';
-import Modal from '../components/Modal';
 import NavBar from '../components/NavBar';
 
 export default function ConditionPage({ onResult, onBack }) {
@@ -16,35 +15,8 @@ export default function ConditionPage({ onResult, onBack }) {
   const [excludeRecent, setExcludeRecent] = useState(true);
   const [soloOnly, setSoloOnly] = useState(false);
   const [healthyOnly, setHealthyOnly] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [pendingSubmit, setPendingSubmit] = useState(false);
 
   function handleSubmit() {
-    // 위치 권한 동의 여부 확인 (한 번만 보여줌)
-    const locationAsked = sessionStorage.getItem('locationAsked');
-    if (!locationAsked) {
-      setShowLocationModal(true);
-      setPendingSubmit(true);
-      return;
-    }
-    doSubmit();
-  }
-
-  function handleLocationConfirm() {
-    sessionStorage.setItem('locationAsked', 'true');
-    setShowLocationModal(false);
-    setPendingSubmit(false);
-    doSubmit();
-  }
-
-  function handleLocationCancel() {
-    sessionStorage.setItem('locationAsked', 'true');
-    setShowLocationModal(false);
-    setPendingSubmit(false);
-    doSubmit(); // 거부해도 기본 추천은 진행
-  }
-
-  function doSubmit() {
     const criteria = {
       selectedCategory,
       preferSpicy,
@@ -61,13 +33,6 @@ export default function ConditionPage({ onResult, onBack }) {
 
   return (
     <div style={styles.container}>
-      {showLocationModal && (
-        <Modal
-          message="📍 근처 음식점 추천을 위해 위치 정보를 사용해요. 허용하시겠어요?"
-          onConfirm={handleLocationConfirm}
-          onCancel={handleLocationCancel}
-        />
-      )}
       <NavBar title="먹픽" onBack={onBack} />
 
       <div style={styles.section}>
