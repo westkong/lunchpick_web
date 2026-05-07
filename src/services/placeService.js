@@ -37,19 +37,20 @@ export function getCurrentPosition() {
   });
 }
 
-// 카카오 Places API로 근처 음식점 검색
-// keyword: 검색어 (예: "김치찌개", "라멘")
-// location: { lat, lng } 현재 위치
-// 반환: [{ name, address, distance, phone, url, category }]
-export async function searchNearbyPlaces(keyword, location) {
-  await loadKakaoSDK();
-
-  return new Promise((resolve) => {
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
-      resolve([]);
-      return;
+// 메뉴명에서 핵심 키워드 추출 (예: "순두부찌개" -> "순두부")
+function simplifyKeyword(keyword) {
+  const suffixes = ['찌개', '볶음', '구이', '튀김', '조림', '무침', '비빔', '볶이', '탕', '국밥', '국수', '라면'];
+  for (const suffix of suffixes) {
+    if (keyword.endsWith(suffix) && keyword.length > suffix.length + 1) {
+      return keyword.slice(0, -suffix.length);
     }
+  }
+  return null;
+}
 
+// 단일 키워드로 검색
+function searchOnce(keyword, location, radius) {
+  return new Promise((resolve) => {
     const ps = new window.kakao.maps.services.Places();
     const coords = new window.kakao.maps.LatLng(location.lat, location.lng);
 
@@ -60,7 +61,6 @@ export async function searchNearbyPlaces(keyword, location) {
           resolve([]);
           return;
         }
-        // 결과를 정리해서 반환
         const places = data.map((p) => ({
           name: p.place_name,
           address: p.road_address_name || p.address_name,
@@ -73,13 +73,44 @@ export async function searchNearbyPlaces(keyword, location) {
       },
       {
         location: coords,
-        radius: 2000, // 반경 2km
-        sort: window.kakao.maps.services.SortBy.DISTANCE, // 가까운 순
-        size: 15, // 최대 15개
-        category_group_code: 'FD6', // FD6 = 음식점
+        radius,
+        sort: window.kakao.maps.services.SortBy.DISTANCE,
+        size: 15,
       }
     );
   });
+}
+
+// 카카오 Places API로 근처 음식점 검색 (여러 전략 시도)
+export async function searchNearbyPlaces(keyword, location) {
+  await loadKakaoSDK();
+
+  if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
+    return [];
+  }
+
+  // 전략 1: 원래 키워드 그대로 (반경 3km)
+  let results = await searchOnce(keyword, location, 3000);
+  if (results.length > 0) return results;
+
+  // 전략 2: 줄인 키워드 (예: 순두부찌개 -> 순두부) (반경 3km)
+  const simpler = simplifyKeyword(keyword);
+  if (simpler) {
+    results = await searchOnce(simpler, location, 3000);
+    if (results.length > 0) return results;
+  }
+
+  // 전략 3: 원래 키워드 더 넓게 (반경 5km)
+  results = await searchOnce(keyword, location, 5000);
+  if (results.length > 0) return results;
+
+  // 전략 4: 줄인 키워드 더 넓게
+  if (simpler) {
+    results = await searchOnce(simpler, location, 5000);
+    if (results.length > 0) return results;
+  }
+
+  return [];
 }
 
 // 근처 음식점 중 랜덤 1개 뽑기
