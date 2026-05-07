@@ -14,11 +14,11 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
   const [placeError, setPlaceError] = useState(null);
 
   // 추천 결과가 바뀔 때마다 근처 음식점 자동 검색
-  // (배포 후 플랫폼 등록 시 활성화)
   useEffect(() => {
-    // if (picks.length > 0) {
-    //   findNearbyPlace(picks[0].name);
-    // }
+    if (picks.length > 0) {
+      findNearbyPlace(picks[0].name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picks]);
 
   async function findNearbyPlace(menuName) {
