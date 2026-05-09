@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 capture.mjs
+capture_og.mjs
 
 .vercel
