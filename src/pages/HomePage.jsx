@@ -31,21 +31,19 @@ export default function HomePage({ onStart, onRoulette }) {
           onCancel={() => setShowModal(false)}
         />
       )}
-      <div style={styles.top}>
-        <h1 style={styles.logo}>🍱 먹픽</h1>
+
+      <div style={styles.heroSection}>
+        <div style={styles.logoRow}>
+          <BentoLogo />
+          <h1 style={styles.logoText}>먹픽</h1>
+        </div>
         <p style={styles.tagline}>점심 고민 1분 컷.</p>
       </div>
 
-      <div style={styles.middle}>
-        <p style={styles.message}>
-          버튼을 눌러 조건을 선택하고<br />
-          오늘 뭐 먹을지 정해봐요.
-        </p>
-
+      <div style={styles.buttonSection}>
         <button style={styles.button} onClick={onStart}>
           ▶ 추천 시작
         </button>
-
         <button style={styles.rouletteButton} onClick={onRoulette}>
           🎰 룰렛 돌리기
         </button>
@@ -70,41 +68,67 @@ export default function HomePage({ onStart, onRoulette }) {
   );
 }
 
+// 먹픽 로고 아이콘 (도시락)
+function BentoLogo() {
+  return (
+    <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bentoBg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FF6A00" />
+          <stop offset="100%" stopColor="#FF9A3C" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="14" fill="url(#bentoBg)" />
+      <ellipse cx="32" cy="42" rx="22" ry="6" fill="rgba(255,255,255,0.2)" />
+      <ellipse cx="32" cy="38" rx="22" ry="14" fill="white" />
+      <ellipse cx="32" cy="34" rx="14" ry="8" fill="#FFE0B2" />
+      <rect x="44" y="12" width="3" height="26" rx="1.5" fill="white" transform="rotate(15 44 12)" />
+      <rect x="48" y="12" width="3" height="26" rx="1.5" fill="rgba(255,255,255,0.7)" transform="rotate(15 48 12)" />
+      <ellipse cx="18" cy="16" rx="4" ry="5" fill="white" />
+      <rect x="16" y="20" width="3" height="16" rx="1.5" fill="white" />
+    </svg>
+  );
+}
+
 const styles = {
   container: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    padding: '32px 20px 20px',
+    padding: '20px',
     boxSizing: 'border-box',
   },
-  top: {
-    textAlign: 'center',
-  },
-  logo: {
-    margin: 0,
-    fontSize: '32px',
-    fontWeight: 'bold',
-  },
-  tagline: {
-    margin: '4px 0 0',
-    fontSize: '14px',
-    color: '#888',
-  },
-  middle: {
+  heroSection: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '14px',
-    textAlign: 'center',
+    gap: '8px',
   },
-  message: {
+  logoRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+  },
+  logoText: {
     margin: 0,
-    fontSize: '17px',
-    color: '#555',
-    lineHeight: '1.6',
+    fontSize: '52px',
+    fontWeight: 900,
+    letterSpacing: '-2px',
+    color: '#222',
+  },
+  tagline: {
+    margin: 0,
+    fontSize: '16px',
+    color: '#888',
+    letterSpacing: '-0.5px',
+  },
+  buttonSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    paddingBottom: '8px',
   },
   button: {
     width: '100%',
@@ -133,6 +157,7 @@ const styles = {
     backgroundColor: '#f8f8f8',
     borderRadius: '12px',
     padding: '14px 16px',
+    marginTop: '12px',
   },
   historyHeader: {
     display: 'flex',
