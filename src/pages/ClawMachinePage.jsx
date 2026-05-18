@@ -11,8 +11,76 @@ import NavBar from '../components/NavBar';
 // 뽑기 통 안에 깔아둘 음식 개수
 const PILE_SIZE = 12;
 
+// 캡슐 하단 색 팔레트 (가챠 느낌)
+const CAPSULE_COLORS = [
+  '#FF6A00', '#FF3B7B', '#4A90E2', '#7B61FF',
+  '#21C17A', '#FFB300', '#FF7043', '#26C6DA',
+];
+
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// 음식 이름으로 캡슐 색을 항상 같게 정해줘요
+function colorForName(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return CAPSULE_COLORS[h % CAPSULE_COLORS.length];
+}
+
+// 가챠 캡슐 컴포넌트 — 위는 투명, 아래는 컬러, 안에 음식 이모지가 살짝 보여요
+function Capsule({ emoji, color, size = 44, opened = false }) {
+  const half = size / 2;
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        overflow: 'hidden',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.18), inset 0 -3px 6px rgba(0,0,0,0.12)',
+        flexShrink: 0,
+      }}
+    >
+      {/* 아래쪽 컬러 반구 */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        height: opened ? 0 : half,
+        background: color,
+        transition: 'height 0.3s ease',
+      }} />
+      {/* 위쪽 투명 반구 (플라스틱 느낌) */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0,
+        height: opened ? size : half,
+        background: 'linear-gradient(160deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 60%, rgba(255,255,255,0.15) 100%)',
+        transition: 'height 0.3s ease',
+      }} />
+      {/* 가운데 띠 (캡슐 이음새) */}
+      {!opened && (
+        <div style={{
+          position: 'absolute', top: half - 2, left: 0, right: 0,
+          height: 4, background: 'rgba(0,0,0,0.15)',
+        }} />
+      )}
+      {/* 음식 이모지 */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: size * 0.5,
+      }}>
+        {emoji}
+      </div>
+      {/* 하이라이트 점 */}
+      <div style={{
+        position: 'absolute', top: size * 0.16, left: size * 0.2,
+        width: size * 0.18, height: size * 0.18,
+        borderRadius: '50%',
+        background: 'rgba(255,255,255,0.7)',
+      }} />
+    </div>
+  );
 }
 
 export default function ClawMachinePage({ onHome }) {
@@ -116,8 +184,8 @@ export default function ClawMachinePage({ onHome }) {
         return;
       }
 
-      // 성공! 음식을 들고 올라감
-      setHolding(getMenuEmoji(target));
+      // 성공! 캡슐을 들고 올라감
+      setHolding({ emoji: getMenuEmoji(target), color: colorForName(target.name) });
       setPhase('lifting');
       setClawDown(false);
 
@@ -213,22 +281,24 @@ export default function ClawMachinePage({ onHome }) {
               }}
             />
             {holding && (
-              <div style={styles.holdingItem}>{holding}</div>
+              <div style={styles.holdingItem}>
+                <Capsule emoji={holding.emoji} color={holding.color} size={40} />
+              </div>
             )}
           </div>
         </div>
 
-        {/* 음식 더미 */}
+        {/* 음식 캡슐 더미 */}
         <div style={styles.pile}>
           {pile.map((m, i) => (
             <span
               key={i}
               style={{
-                ...styles.pileItem,
+                display: 'inline-block',
                 animation: `ait-float ${2 + (i % 4) * 0.4}s ease-in-out ${i * 0.1}s infinite`,
               }}
             >
-              {getMenuEmoji(m)}
+              <Capsule emoji={getMenuEmoji(m)} color={colorForName(m.name)} size={42} />
             </span>
           ))}
         </div>
@@ -252,8 +322,10 @@ export default function ClawMachinePage({ onHome }) {
       {/* 결과 */}
       {result && phase === 'done' ? (
         <div style={styles.resultBox}>
-          <div style={styles.resultEmoji}>{getMenuEmoji(result)}</div>
-          <p style={styles.resultLabel}>오늘 점심은</p>
+          <div style={styles.resultCapsule}>
+            <Capsule emoji={getMenuEmoji(result)} color={colorForName(result.name)} size={72} opened />
+          </div>
+          <p style={styles.resultLabel}>캡슐 속 오늘 점심은</p>
           <p style={styles.resultName}>{result.name}</p>
           <p style={styles.resultMeta}>
             {result.category} · {result.price.toLocaleString()}원
@@ -418,8 +490,9 @@ const styles = {
     textAlign: 'center',
     flexShrink: 0,
   },
-  resultEmoji: {
-    fontSize: '52px',
+  resultCapsule: {
+    display: 'flex',
+    justifyContent: 'center',
     animation: 'ait-pop 0.5s ease',
   },
   resultLabel: {
