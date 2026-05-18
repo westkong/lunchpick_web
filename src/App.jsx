@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import ConditionPage from './pages/ConditionPage';
 import ResultPage from './pages/ResultPage';
 import RoulettePage from './pages/RoulettePage';
+import ClawMachinePage from './pages/ClawMachinePage';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -22,7 +23,11 @@ export default function App() {
           <HomePage
             onStart={() => setPage('condition')}
             onRoulette={() => setPage('roulette')}
+            onClaw={() => setPage('claw')}
           />
+        )}
+        {page === 'claw' && (
+          <ClawMachinePage onHome={() => setPage('home')} />
         )}
         {page === 'condition' && (
           <ConditionPage onResult={handleResult} onBack={() => setPage('home')} />
@@ -42,42 +47,19 @@ export default function App() {
   );
 }
 
-// 모바일(토스 미니앱)에서는 wrapper 없이 전체 화면 사용
-// PC에서는 모바일 미리보기처럼 가운데 정렬 + 그림자
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 600;
-
 const styles = {
-  wrapper: isMobile
-    ? {
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'white',
-      }
-    : {
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f0f0f0',
-      },
-  phone: isMobile
-    ? {
-        flex: 1,
-        width: '100%',
-        backgroundColor: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }
-    : {
-        width: '390px',
-        height: '844px',
-        backgroundColor: 'white',
-        borderRadius: '40px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-      },
+  wrapper: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'white',
+  },
+  phone: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
 };

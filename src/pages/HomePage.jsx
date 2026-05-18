@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getRecentlyEatenNames, clearHistory } from '../services/historyService';
 import Modal from '../components/Modal';
 
-export default function HomePage({ onStart, onRoulette }) {
+export default function HomePage({ onStart, onRoulette, onClaw }) {
   const [recent, setRecent] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -41,12 +41,21 @@ export default function HomePage({ onStart, onRoulette }) {
       </div>
 
       <div style={styles.buttonSection}>
-        <button style={styles.button} onClick={onStart}>
-          ▶ 추천 시작
+        <button style={styles.heroButton} onClick={onClaw}>
+          <span style={styles.heroEmoji}>🎮</span>
+          <span style={styles.heroTextWrap}>
+            <span style={styles.heroTitle}>인형뽑기로 점심 뽑기</span>
+            <span style={styles.heroSub}>오늘은 운명에 맡겨봐!</span>
+          </span>
         </button>
-        <button style={styles.rouletteButton} onClick={onRoulette}>
-          🎰 룰렛 돌리기
-        </button>
+        <div style={styles.subButtonRow}>
+          <button style={styles.subButton} onClick={onStart}>
+            🎯 조건별 추천
+          </button>
+          <button style={styles.subButton} onClick={onRoulette}>
+            🎰 룰렛
+          </button>
+        </div>
       </div>
 
       {recent.length > 0 && (
@@ -130,22 +139,47 @@ const styles = {
     gap: '12px',
     paddingBottom: '8px',
   },
-  button: {
+  heroButton: {
     width: '100%',
-    padding: '16px 36px',
-    fontSize: '17px',
-    backgroundColor: '#FF6A00',
+    padding: '20px 24px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    background: 'linear-gradient(135deg, #FF6A00 0%, #FF9A3C 100%)',
     color: 'white',
     border: 'none',
-    borderRadius: '14px',
+    borderRadius: '18px',
     cursor: 'pointer',
-    fontWeight: 'bold',
-    boxShadow: '0 4px 12px rgba(255, 106, 0, 0.3)',
+    boxShadow: '0 8px 20px rgba(255, 106, 0, 0.4)',
+    textAlign: 'left',
   },
-  rouletteButton: {
-    width: '100%',
-    padding: '14px 36px',
-    fontSize: '16px',
+  heroEmoji: {
+    fontSize: '40px',
+    flexShrink: 0,
+  },
+  heroTextWrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '3px',
+  },
+  heroTitle: {
+    fontSize: '19px',
+    fontWeight: 900,
+    letterSpacing: '-0.5px',
+  },
+  heroSub: {
+    fontSize: '13px',
+    opacity: 0.9,
+    fontWeight: 500,
+  },
+  subButtonRow: {
+    display: 'flex',
+    gap: '10px',
+  },
+  subButton: {
+    flex: 1,
+    padding: '14px',
+    fontSize: '15px',
     backgroundColor: 'white',
     color: '#FF6A00',
     border: '2px solid #FF6A00',

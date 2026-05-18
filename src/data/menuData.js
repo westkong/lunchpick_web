@@ -5,7 +5,7 @@
 
 export const ALL_CATEGORY = '전체';
 
-export const CATEGORIES = [ALL_CATEGORY, '한식', '일식', '중식', '양식', '분식', '아시아'];
+export const CATEGORIES = [ALL_CATEGORY, '한식', '일식', '중식', '양식', '분식', '아시아', '치킨', '멕시칸', '간식'];
 
 // 가격대 슬라이더 범위
 export const PRICE_MIN = 1000;
@@ -169,4 +169,158 @@ export const MENUS = [
   { name: '버터치킨카레',   category: '아시아', spicy: false, hotSoup: false, price: 16000, soloFriendly: true,  healthy: false },
   { name: '난',             category: '아시아', spicy: false, hotSoup: false, price: 4000,  soloFriendly: true,  healthy: false },
   { name: '케밥',           category: '아시아', spicy: false, hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '하이난치킨라이스', category: '아시아', spicy: false, hotSoup: false, price: 12000, soloFriendly: true,  healthy: true  },
+  { name: '카오팟',         category: '아시아', spicy: false, hotSoup: false, price: 11000, soloFriendly: true,  healthy: false },
+  { name: '분보후에',       category: '아시아', spicy: true,  hotSoup: true,  price: 12000, soloFriendly: true,  healthy: true  },
+  { name: '룬댕',           category: '아시아', spicy: true,  hotSoup: false, price: 14000, soloFriendly: true,  healthy: false },
+  { name: '사테',           category: '아시아', spicy: false, hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '비프누들',       category: '아시아', spicy: false, hotSoup: true,  price: 12000, soloFriendly: true,  healthy: true  },
+
+  // ========== 한식 (추가) ==========
+  { name: '제육덮밥',       category: '한식', spicy: true,  hotSoup: false, price: 9000,  soloFriendly: true,  healthy: false },
+  { name: '오징어덮밥',     category: '한식', spicy: true,  hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '김치볶음밥',     category: '한식', spicy: true,  hotSoup: false, price: 8000,  soloFriendly: true,  healthy: false },
+  { name: '비빔밥정식',     category: '한식', spicy: false, hotSoup: false, price: 12000, soloFriendly: true,  healthy: true  },
+  { name: '뚝배기불고기',   category: '한식', spicy: false, hotSoup: true,  price: 11000, soloFriendly: true,  healthy: false },
+  { name: '소고기무국',     category: '한식', spicy: false, hotSoup: true,  price: 10000, soloFriendly: true,  healthy: true  },
+  { name: '북엇국',         category: '한식', spicy: false, hotSoup: true,  price: 9000,  soloFriendly: true,  healthy: true  },
+  { name: '미역국밥',       category: '한식', spicy: false, hotSoup: true,  price: 9000,  soloFriendly: true,  healthy: true  },
+  { name: '청국장',         category: '한식', spicy: false, hotSoup: true,  price: 10000, soloFriendly: true,  healthy: true  },
+  { name: '김치전',         category: '한식', spicy: true,  hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '해물파전',       category: '한식', spicy: false, hotSoup: false, price: 14000, soloFriendly: false, healthy: false },
+  { name: '메밀국수',       category: '한식', spicy: false, hotSoup: false, price: 9000,  soloFriendly: true,  healthy: true  },
+  { name: '콩국수',         category: '한식', spicy: false, hotSoup: false, price: 10000, soloFriendly: true,  healthy: true  },
+  { name: '삼겹살',         category: '한식', spicy: false, hotSoup: false, price: 16000, soloFriendly: false, healthy: false },
+  { name: '소갈비찜',       category: '한식', spicy: false, hotSoup: false, price: 22000, soloFriendly: false, healthy: false },
+  { name: '간장게장',       category: '한식', spicy: false, hotSoup: false, price: 25000, soloFriendly: true,  healthy: true  },
+  { name: '아구찜',         category: '한식', spicy: true,  hotSoup: false, price: 30000, soloFriendly: false, healthy: true  },
+  { name: '해물찜',         category: '한식', spicy: true,  hotSoup: false, price: 35000, soloFriendly: false, healthy: true  },
+  { name: '동태탕',         category: '한식', spicy: true,  hotSoup: true,  price: 12000, soloFriendly: true,  healthy: true  },
+  { name: '대구탕',         category: '한식', spicy: true,  hotSoup: true,  price: 14000, soloFriendly: true,  healthy: true  },
+  { name: '알탕',           category: '한식', spicy: true,  hotSoup: true,  price: 13000, soloFriendly: true,  healthy: true  },
+
+  // ========== 일식 (추가) ==========
+  { name: '연어덮밥',       category: '일식', spicy: false, hotSoup: false, price: 14000, soloFriendly: true,  healthy: true  },
+  { name: '장어덮밥',       category: '일식', spicy: false, hotSoup: false, price: 18000, soloFriendly: true,  healthy: true  },
+  { name: '회덮밥(일식)',   category: '일식', spicy: false, hotSoup: false, price: 15000, soloFriendly: true,  healthy: true  },
+  { name: '연어초밥',       category: '일식', spicy: false, hotSoup: false, price: 16000, soloFriendly: true,  healthy: true  },
+  { name: '타코야키',       category: '일식', spicy: false, hotSoup: false, price: 7000,  soloFriendly: true,  healthy: false },
+  { name: '오코노미야키',   category: '일식', spicy: false, hotSoup: false, price: 12000, soloFriendly: true,  healthy: false },
+  { name: '샤브샤브',       category: '일식', spicy: false, hotSoup: true,  price: 17000, soloFriendly: false, healthy: true  },
+  { name: '돈코츠츠케멘',   category: '일식', spicy: false, hotSoup: false, price: 14000, soloFriendly: true,  healthy: false },
+  { name: '명란파스타동',   category: '일식', spicy: false, hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '히레카츠',       category: '일식', spicy: false, hotSoup: false, price: 14000, soloFriendly: true,  healthy: false },
+
+  // ========== 중식 (추가) ==========
+  { name: '고추잡채',       category: '중식', spicy: true,  hotSoup: false, price: 16000, soloFriendly: false, healthy: false },
+  { name: '깐풍새우',       category: '중식', spicy: true,  hotSoup: false, price: 24000, soloFriendly: false, healthy: false },
+  { name: '칠리새우',       category: '중식', spicy: true,  hotSoup: false, price: 24000, soloFriendly: false, healthy: false },
+  { name: '라조기',         category: '중식', spicy: true,  hotSoup: false, price: 23000, soloFriendly: false, healthy: false },
+  { name: '중화비빔밥',     category: '중식', spicy: true,  hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '새우볶음밥',     category: '중식', spicy: false, hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '게살볶음밥',     category: '중식', spicy: false, hotSoup: false, price: 11000, soloFriendly: true,  healthy: false },
+  { name: '사천탕면',       category: '중식', spicy: true,  hotSoup: true,  price: 10000, soloFriendly: true,  healthy: false },
+  { name: '우육면',         category: '중식', spicy: false, hotSoup: true,  price: 12000, soloFriendly: true,  healthy: false },
+  { name: '꿔바로우',       category: '중식', spicy: false, hotSoup: false, price: 18000, soloFriendly: false, healthy: false },
+
+  // ========== 양식 (추가) ==========
+  { name: '알리오올리오',   category: '양식', spicy: false, hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '까르보나라',     category: '양식', spicy: false, hotSoup: false, price: 15000, soloFriendly: true,  healthy: false },
+  { name: '하와이안피자',   category: '양식', spicy: false, hotSoup: false, price: 21000, soloFriendly: false, healthy: false },
+  { name: '바질페스토파스타', category: '양식', spicy: false, hotSoup: false, price: 16000, soloFriendly: true,  healthy: true  },
+  { name: '감바스',         category: '양식', spicy: true,  hotSoup: false, price: 18000, soloFriendly: false, healthy: false },
+  { name: '치킨스테이크',   category: '양식', spicy: false, hotSoup: false, price: 16000, soloFriendly: true,  healthy: false },
+  { name: '연어스테이크',   category: '양식', spicy: false, hotSoup: false, price: 24000, soloFriendly: true,  healthy: true  },
+  { name: '필라프',         category: '양식', spicy: false, hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '클럽샌드위치',   category: '양식', spicy: false, hotSoup: false, price: 12000, soloFriendly: true,  healthy: false },
+  { name: '아보카도샐러드', category: '양식', spicy: false, hotSoup: false, price: 13000, soloFriendly: true,  healthy: true  },
+
+  // ========== 분식 (추가) ==========
+  { name: '라볶이',         category: '분식', spicy: true,  hotSoup: true,  price: 6500,  soloFriendly: true,  healthy: false },
+  { name: '치즈라볶이',     category: '분식', spicy: true,  hotSoup: true,  price: 7500,  soloFriendly: true,  healthy: false },
+  { name: '김치볶음밥(분식)', category: '분식', spicy: true,  hotSoup: false, price: 6000,  soloFriendly: true,  healthy: false },
+  { name: '날치알주먹밥',   category: '분식', spicy: false, hotSoup: false, price: 5000,  soloFriendly: true,  healthy: false },
+  { name: '충무김밥',       category: '분식', spicy: true,  hotSoup: false, price: 6000,  soloFriendly: true,  healthy: false },
+  { name: '비빔만두',       category: '분식', spicy: true,  hotSoup: false, price: 6500,  soloFriendly: true,  healthy: false },
+  { name: '떡꼬치',         category: '분식', spicy: true,  hotSoup: false, price: 3000,  soloFriendly: true,  healthy: false },
+  { name: '계란말이김밥',   category: '분식', spicy: false, hotSoup: false, price: 5500,  soloFriendly: true,  healthy: false },
+
+  // ========== 치킨 ==========
+  { name: '후라이드치킨',   category: '치킨', spicy: false, hotSoup: false, price: 18000, soloFriendly: false, healthy: false },
+  { name: '양념치킨',       category: '치킨', spicy: true,  hotSoup: false, price: 19000, soloFriendly: false, healthy: false },
+  { name: '간장치킨',       category: '치킨', spicy: false, hotSoup: false, price: 19000, soloFriendly: false, healthy: false },
+  { name: '마늘치킨',       category: '치킨', spicy: false, hotSoup: false, price: 20000, soloFriendly: false, healthy: false },
+  { name: '파닭',           category: '치킨', spicy: false, hotSoup: false, price: 20000, soloFriendly: false, healthy: false },
+  { name: '불닭',           category: '치킨', spicy: true,  hotSoup: false, price: 20000, soloFriendly: false, healthy: false },
+  { name: '치킨버거세트',   category: '치킨', spicy: false, hotSoup: false, price: 8000,  soloFriendly: true,  healthy: false },
+  { name: '닭강정',         category: '치킨', spicy: true,  hotSoup: false, price: 12000, soloFriendly: true,  healthy: false },
+  { name: '치킨텐더',       category: '치킨', spicy: false, hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '순살치킨',       category: '치킨', spicy: false, hotSoup: false, price: 20000, soloFriendly: true,  healthy: false },
+  { name: '뿌링클치킨',     category: '치킨', spicy: false, hotSoup: false, price: 21000, soloFriendly: false, healthy: false },
+  { name: '치킨무한리필',   category: '치킨', spicy: false, hotSoup: false, price: 16000, soloFriendly: true,  healthy: false },
+
+  // ========== 멕시칸 ==========
+  { name: '타코',           category: '멕시칸', spicy: true,  hotSoup: false, price: 9000,  soloFriendly: true,  healthy: false },
+  { name: '부리토',         category: '멕시칸', spicy: true,  hotSoup: false, price: 11000, soloFriendly: true,  healthy: false },
+  { name: '퀘사디아',       category: '멕시칸', spicy: false, hotSoup: false, price: 12000, soloFriendly: true,  healthy: false },
+  { name: '나초',           category: '멕시칸', spicy: true,  hotSoup: false, price: 10000, soloFriendly: true,  healthy: false },
+  { name: '엔칠라다',       category: '멕시칸', spicy: true,  hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '타코샐러드',     category: '멕시칸', spicy: true,  hotSoup: false, price: 12000, soloFriendly: true,  healthy: true  },
+  { name: '치미창가',       category: '멕시칸', spicy: true,  hotSoup: false, price: 13000, soloFriendly: true,  healthy: false },
+  { name: '파히타',         category: '멕시칸', spicy: true,  hotSoup: false, price: 16000, soloFriendly: false, healthy: false },
+
+  // ========== 간식 ==========
+  { name: '샌드위치&커피',  category: '간식', spicy: false, hotSoup: false, price: 8000,  soloFriendly: true,  healthy: true  },
+  { name: '베이글샌드위치', category: '간식', spicy: false, hotSoup: false, price: 7000,  soloFriendly: true,  healthy: true  },
+  { name: '크로플',         category: '간식', spicy: false, hotSoup: false, price: 6000,  soloFriendly: true,  healthy: false },
+  { name: '와플',           category: '간식', spicy: false, hotSoup: false, price: 6000,  soloFriendly: true,  healthy: false },
+  { name: '토스트',         category: '간식', spicy: false, hotSoup: false, price: 4500,  soloFriendly: true,  healthy: false },
+  { name: '샐러드볼',       category: '간식', spicy: false, hotSoup: false, price: 9000,  soloFriendly: true,  healthy: true  },
+  { name: '과일도시락',     category: '간식', spicy: false, hotSoup: false, price: 7000,  soloFriendly: true,  healthy: true  },
+  { name: '그릭요거트볼',   category: '간식', spicy: false, hotSoup: false, price: 8000,  soloFriendly: true,  healthy: true  },
+  { name: '핫도그&음료',    category: '간식', spicy: false, hotSoup: false, price: 5000,  soloFriendly: true,  healthy: false },
+  { name: '컵밥',           category: '간식', spicy: true,  hotSoup: false, price: 5000,  soloFriendly: true,  healthy: false },
 ];
+
+// 메뉴 이름/카테고리로 어울리는 음식 이모지를 골라줘요 (인형뽑기·룰렛·결과 표시용)
+const EMOJI_RULES = [
+  [/(초밥|스시|사시미|회|연어|장어|광어)/, '🍣'],
+  [/(라멘|라면|쌀국수|우동|소바|국수|면|짬뽕|짜장|우육면|탕면|누들)/, '🍜'],
+  [/(찌개|전골|샤브|훠궈|마라탕|똠얌|나베|국밥|해장국|곰탕|설렁탕|갈비탕|삼계탕|육개장|순대국|돼지국밥|탕|국)/, '🍲'],
+  [/(피자)/, '🍕'],
+  [/(버거|햄버거)/, '🍔'],
+  [/(파스타|스파게티|까르보나라|알리오|봉골레|뇨끼|라자냐|리조또|필라프)/, '🍝'],
+  [/(스테이크)/, '🥩'],
+  [/(샐러드|포케|샐러드볼)/, '🥗'],
+  [/(치킨|닭강정|닭갈비|찜닭|닭한마리|파닭|불닭|텐더|순살)/, '🍗'],
+  [/(카레|커리)/, '🍛'],
+  [/(김밥|주먹밥)/, '🍙'],
+  [/(만두|딤섬|군만두|물만두)/, '🥟'],
+  [/(타코|부리토|퀘사디아|나초|엔칠라다|파히타|치미창가)/, '🌮'],
+  [/(케밥)/, '🌯'],
+  [/(핫도그)/, '🌭'],
+  [/(샌드위치|파니니|베이글|클럽|토스트|반미)/, '🥪'],
+  [/(떡볶이|라볶이|떡꼬치)/, '🍢'],
+  [/(돈가스|카츠|돈카츠|히레)/, '🍱'],
+  [/(덮밥|동$|규동|가츠동|텐동|오야코|볶음밥|비빔밥|컵밥|밥)/, '🍚'],
+  [/(족발|보쌈|삼겹|갈비|불고기|제육|고기)/, '🍖'],
+  [/(파전|김치전|와플|크로플|오코노미)/, '🥞'],
+  [/(요거트|과일)/, '🍓'],
+  [/(새우|감바스)/, '🦐'],
+  [/(게장|게살)/, '🦀'],
+  [/(오징어|쭈꾸미|낙지)/, '🦑'],
+];
+
+const CATEGORY_EMOJI = {
+  한식: '🍚', 일식: '🍣', 중식: '🥡', 양식: '🍝',
+  분식: '🍢', 아시아: '🍜', 치킨: '🍗', 멕시칸: '🌮', 간식: '🥪',
+};
+
+export function getMenuEmoji(menu) {
+  const name = typeof menu === 'string' ? menu : menu?.name || '';
+  for (const [re, emoji] of EMOJI_RULES) {
+    if (re.test(name)) return emoji;
+  }
+  const cat = typeof menu === 'object' ? menu?.category : null;
+  return CATEGORY_EMOJI[cat] || '🍽️';
+}

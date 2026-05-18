@@ -1,13 +1,34 @@
 // 추천 결과 화면이에요 - 메뉴 1개 추천
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { pickMultiple } from '../services/recommendationService';
 import { addToHistory } from '../services/historyService';
+import { getMenuEmoji, MENUS } from '../data/menuData';
+import { shareResult } from '../services/shareService';
 import NavBar from '../components/NavBar';
 
 export default function ResultPage({ criteria, candidates, picks: initialPicks, onBack, onHome }) {
   const [picks, setPicks] = useState(initialPicks);
   const [chosenName, setChosenName] = useState(null);
+  const [revealing, setRevealing] = useState(true); // 슬롯 긴장감 연출
+  const [spinEmoji, setSpinEmoji] = useState('🍽️');
+  const spinRef = useRef(null);
+
+  // 결과가 바뀔 때마다 짧은 슬롯 연출 (긴장감)
+  useEffect(() => {
+    if (picks.length === 0) { setRevealing(false); return; }
+    setRevealing(true);
+    let ticks = 0;
+    spinRef.current = setInterval(() => {
+      setSpinEmoji(getMenuEmoji(MENUS[Math.floor(Math.random() * MENUS.length)]));
+      ticks += 1;
+      if (ticks > 11) {
+        clearInterval(spinRef.current);
+        setRevealing(false);
+      }
+    }, 75);
+    return () => clearInterval(spinRef.current);
+  }, [picks]);
 
   function handleReroll() {
     const newPicks = pickMultiple(candidates, 1);
@@ -20,12 +41,26 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
     setChosenName(menu.name);
   }
 
+  function handleShare() {
+    const menu = picks[0];
+    if (!menu) return;
+    shareResult({
+      title: '먹픽 추천',
+      text: `🍽️ 먹픽이 골라준 오늘 점심: ${getMenuEmoji(menu)} ${menu.name}! 너도 정해봐`,
+    });
+  }
+
   return (
     <div style={styles.container}>
       <NavBar title="먹픽" onBack={onBack} />
 
       {picks.length === 0 ? (
         <EmptyState />
+      ) : revealing ? (
+        <div style={styles.spinBox}>
+          <div style={styles.spinEmoji}>{spinEmoji}</div>
+          <p style={styles.spinText}>두구두구... 🥁</p>
+        </div>
       ) : (
         <>
           <p style={styles.subtitle}>
@@ -46,13 +81,19 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
             ))}
           </div>
 
-          <button
-            style={{ ...styles.rerollButton, opacity: candidates.length > picks.length ? 1 : 0.4 }}
-            onClick={handleReroll}
-            disabled={candidates.length <= picks.length}
-          >
-            ↻ 다른 메뉴 보기
-          </button>
+          {chosenName ? (
+            <button style={styles.shareButton} onClick={handleShare}>
+              결과 공유하기 📤
+            </button>
+          ) : (
+            <button
+              style={{ ...styles.rerollButton, opacity: candidates.length > picks.length ? 1 : 0.4 }}
+              onClick={handleReroll}
+              disabled={candidates.length <= picks.length}
+            >
+              ↻ 다른 메뉴 보기
+            </button>
+          )}
         </>
       )}
 
@@ -82,7 +123,10 @@ function MenuCard({ menu, isChosen, isDimmed, onChoose }) {
       }}
     >
       <div style={styles.cardLeft}>
-        <p style={styles.cardName}>{menu.name}</p>
+        <p style={styles.cardName}>
+          <span style={{ fontSize: '24px', marginRight: '8px' }}>{getMenuEmoji(menu)}</span>
+          {menu.name}
+        </p>
         <p style={styles.cardMeta}>
           {menu.category} · {menu.price.toLocaleString()}원
           {menu.spicy && ' · 🌶️'}
@@ -277,6 +321,35 @@ const styles = {
     padding: '12px',
     borderRadius: '10px',
     fontWeight: '600',
+  },
+  shareButton: {
+    background: '#FF6A00',
+    border: 'none',
+    color: 'white',
+    fontSize: '15px',
+    cursor: 'pointer',
+    padding: '14px',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+  },
+  spinBox: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '12px',
+    minHeight: '200px',
+  },
+  spinEmoji: {
+    fontSize: '72px',
+    lineHeight: 1,
+  },
+  spinText: {
+    margin: 0,
+    fontSize: '17px',
+    fontWeight: 'bold',
+    color: '#FF6A00',
   },
   emptyState: {
     textAlign: 'center',
