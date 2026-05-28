@@ -5,6 +5,7 @@ import { pickMultiple } from '../services/recommendationService';
 import { addToHistory } from '../services/historyService';
 import { getMenuEmoji, MENUS } from '../data/menuData';
 import { shareResult } from '../services/shareService';
+import { preloadAd, showAd } from '../services/adService';
 import NavBar from '../components/NavBar';
 
 export default function ResultPage({ criteria, candidates, picks: initialPicks, onBack, onHome }) {
@@ -13,6 +14,11 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
   const [revealing, setRevealing] = useState(true); // 슬롯 긴장감 연출
   const [spinEmoji, setSpinEmoji] = useState('🍽️');
   const spinRef = useRef(null);
+
+  // 결과 페이지 진입 시 광고 미리 로드
+  useEffect(() => {
+    preloadAd();
+  }, []);
 
   // 결과가 바뀔 때마다 짧은 슬롯 연출 (긴장감)
   useEffect(() => {
@@ -37,8 +43,11 @@ export default function ResultPage({ criteria, candidates, picks: initialPicks, 
   }
 
   function handleChoose(menu) {
-    addToHistory(menu.name);
-    setChosenName(menu.name);
+    // "이거!" 클릭 시 전면 광고 노출 → 닫으면 선택 완료
+    showAd(() => {
+      addToHistory(menu.name);
+      setChosenName(menu.name);
+    });
   }
 
   function handleShare() {
