@@ -5,85 +5,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { MENUS, CATEGORIES, ALL_CATEGORY, getMenuEmoji } from '../data/menuData';
 import { addToHistory } from '../services/historyService';
+import { addToCollection } from '../services/collectionService';
 import { shareResult } from '../services/shareService';
+import Capsule, { colorForName } from '../components/Capsule';
 import NavBar from '../components/NavBar';
 
 // 뽑기 통 안에 깔아둘 음식 개수
 const PILE_SIZE = 12;
 
-// 캡슐 하단 색 팔레트 (가챠 느낌)
-const CAPSULE_COLORS = [
-  '#FF6A00', '#FF3B7B', '#4A90E2', '#7B61FF',
-  '#21C17A', '#FFB300', '#FF7043', '#26C6DA',
-];
+// 금색 캡슐이 나올 확률 (희귀!)
+const RARE_CHANCE = 0.05;
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 음식 이름으로 캡슐 색을 항상 같게 정해줘요
-function colorForName(name) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return CAPSULE_COLORS[h % CAPSULE_COLORS.length];
-}
-
-// 가챠 캡슐 컴포넌트 — 위는 투명, 아래는 컬러, 안에 음식 이모지가 살짝 보여요
-function Capsule({ emoji, color, size = 44, opened = false }) {
-  const half = size / 2;
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        overflow: 'hidden',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.18), inset 0 -3px 6px rgba(0,0,0,0.12)',
-        flexShrink: 0,
-      }}
-    >
-      {/* 아래쪽 컬러 반구 */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        height: opened ? 0 : half,
-        background: color,
-        transition: 'height 0.3s ease',
-      }} />
-      {/* 위쪽 투명 반구 (플라스틱 느낌) */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0,
-        height: opened ? size : half,
-        background: 'linear-gradient(160deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 60%, rgba(255,255,255,0.15) 100%)',
-        transition: 'height 0.3s ease',
-      }} />
-      {/* 가운데 띠 (캡슐 이음새) */}
-      {!opened && (
-        <div style={{
-          position: 'absolute', top: half - 2, left: 0, right: 0,
-          height: 4, background: 'rgba(0,0,0,0.15)',
-        }} />
-      )}
-      {/* 음식 이모지 */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: size * 0.5,
-      }}>
-        {emoji}
-      </div>
-      {/* 하이라이트 점 */}
-      <div style={{
-        position: 'absolute', top: size * 0.16, left: size * 0.2,
-        width: size * 0.18, height: size * 0.18,
-        borderRadius: '50%',
-        background: 'rgba(255,255,255,0.7)',
-      }} />
-    </div>
-  );
-}
-
-export default function ClawMachinePage({ onHome }) {
+export default function ClawMachinePage({ onHome, onCollection }) {
   const [category, setCategory] = useState(ALL_CATEGORY);
   const [phase, setPhase] = useState('idle'); // idle | dropping | grabbing | failed | lifting | done
   const [clawX, setClawX] = useState(50); // 가로 위치 %
@@ -184,8 +121,9 @@ export default function ClawMachinePage({ onHome }) {
         return;
       }
 
-      // 성공! 캡슐을 들고 올라감
-      setHolding({ emoji: getMenuEmoji(target), color: colorForName(target.name) });
+      // 성공! 캡슐을 들고 올라감 (5% 확률로 금색 캡슐!)
+      const rare = Math.random() < RARE_CHANCE;
+      setHolding({ emoji: getMenuEmoji(target), color: colorForName(target.name), rare });
       setPhase('lifting');
       setClawDown(false);
 
@@ -194,11 +132,12 @@ export default function ClawMachinePage({ onHome }) {
         setClawX(50);
       }, 800);
 
-      // 5) 결과 공개
+      // 5) 결과 공개 + 도감 등록
       later(() => {
         setPincerClosed(false);
         setHolding(null);
-        setResult(target);
+        const reg = addToCollection(target.name, { rare });
+        setResult({ ...target, rare, isNew: reg.isNew, rareUpgraded: reg.rareUpgraded });
         setPhase('done');
         addToHistory(target.name);
         refillPile();
@@ -282,7 +221,7 @@ export default function ClawMachinePage({ onHome }) {
             />
             {holding && (
               <div style={styles.holdingItem}>
-                <Capsule emoji={holding.emoji} color={holding.color} size={40} />
+                <Capsule emoji={holding.emoji} color={holding.color} rare={holding.rare} size={40} />
               </div>
             )}
           </div>
@@ -322,8 +261,16 @@ export default function ClawMachinePage({ onHome }) {
       {/* 결과 */}
       {result && phase === 'done' ? (
         <div style={styles.resultBox}>
+          {/* 도감 뱃지 */}
+          {(result.rare || result.isNew || result.rareUpgraded) && (
+            <div style={styles.badgeRow}>
+              {result.rare && <span style={styles.rareBadge}>🏆 금색 캡슐!</span>}
+              {result.isNew && <span style={styles.newBadge}>NEW! 도감 등록</span>}
+              {result.rareUpgraded && <span style={styles.newBadge}>금색 승급!</span>}
+            </div>
+          )}
           <div style={styles.resultCapsule}>
-            <Capsule emoji={getMenuEmoji(result)} color={colorForName(result.name)} size={72} opened />
+            <Capsule emoji={getMenuEmoji(result)} color={colorForName(result.name)} rare={result.rare} size={72} opened />
           </div>
           <p style={styles.resultLabel}>캡슐 속 오늘 점심은</p>
           <p style={styles.resultName}>{result.name}</p>
@@ -338,6 +285,9 @@ export default function ClawMachinePage({ onHome }) {
               다시 뽑기 🎮
             </button>
           </div>
+          <button style={styles.collectionLink} onClick={onCollection}>
+            📚 내 캡슐 도감 보기 →
+          </button>
         </div>
       ) : (
         <button
@@ -515,6 +465,41 @@ const styles = {
   resultBtnRow: {
     display: 'flex',
     gap: '8px',
+  },
+  badgeRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '6px',
+    marginBottom: '10px',
+  },
+  rareBadge: {
+    padding: '5px 12px',
+    background: 'linear-gradient(150deg, #FFE259 0%, #FFA751 100%)',
+    color: '#7a4a00',
+    borderRadius: '100px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    animation: 'ait-pop 0.5s ease',
+  },
+  newBadge: {
+    padding: '5px 12px',
+    backgroundColor: '#FF3B7B',
+    color: 'white',
+    borderRadius: '100px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    animation: 'ait-pop 0.5s ease',
+  },
+  collectionLink: {
+    marginTop: '10px',
+    padding: '8px',
+    width: '100%',
+    background: 'none',
+    border: 'none',
+    color: '#FF6A00',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer',
   },
   shareBtn: {
     flex: 1,

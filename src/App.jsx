@@ -6,6 +6,7 @@ import ConditionPage from './pages/ConditionPage';
 import ResultPage from './pages/ResultPage';
 import RoulettePage from './pages/RoulettePage';
 import ClawMachinePage from './pages/ClawMachinePage';
+import CollectionPage from './pages/CollectionPage';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -24,10 +25,17 @@ export default function App() {
             onStart={() => setPage('condition')}
             onRoulette={() => setPage('roulette')}
             onClaw={() => setPage('claw')}
+            onCollection={() => setPage('collection')}
           />
         )}
         {page === 'claw' && (
-          <ClawMachinePage onHome={() => setPage('home')} />
+          <ClawMachinePage
+            onHome={() => setPage('home')}
+            onCollection={() => setPage('collection')}
+          />
+        )}
+        {page === 'collection' && (
+          <CollectionPage onBack={() => setPage('home')} />
         )}
         {page === 'condition' && (
           <ConditionPage onResult={handleResult} onBack={() => setPage('home')} />

@@ -2,14 +2,37 @@
 
 import { useEffect, useState } from 'react';
 import { getRecentlyEatenNames, clearHistory } from '../services/historyService';
+import { getCollectionStats } from '../services/collectionService';
+import { MENUS } from '../data/menuData';
 import Modal from '../components/Modal';
+import { requestNotificationAgreement } from '@apps-in-toss/web-framework';
 
-export default function HomePage({ onStart, onRoulette, onClaw }) {
+// ✅ 승인 후 콘솔 → 스마트 발송 → 알림동의문에서 확인한 코드로 교체
+const NOTIFICATION_TEMPLATE_CODE = 'REPLACE_WITH_TEMPLATE_CODE';
+
+export default function HomePage({ onStart, onRoulette, onClaw, onCollection }) {
   const [recent, setRecent] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [collectionStats, setCollectionStats] = useState({ collected: 0, total: MENUS.length });
 
   useEffect(() => {
     setRecent(getRecentlyEatenNames());
+    setCollectionStats(getCollectionStats(MENUS.length));
+    // 알림 동의 팝업 (앱 첫 방문 시 1회만)
+    // 토스 앱 밖(일반 브라우저)에서는 에러가 나므로 try-catch로 감싸요
+    if (!localStorage.getItem('push_asked')) {
+      try {
+        requestNotificationAgreement({
+          options: { templateCode: NOTIFICATION_TEMPLATE_CODE },
+          onEvent: () => {
+            localStorage.setItem('push_asked', '1');
+          },
+          onError: () => {},
+        });
+      } catch {
+        // 토스 밖 환경 - 알림 동의 건너뛰기
+      }
+    }
   }, []);
 
   function handleClearHistory() {
@@ -50,10 +73,18 @@ export default function HomePage({ onStart, onRoulette, onClaw }) {
         </button>
         <div style={styles.subButtonRow}>
           <button style={styles.subButton} onClick={onStart}>
-            🎯 조건별 추천
+            🎯 추천
           </button>
           <button style={styles.subButton} onClick={onRoulette}>
             🎰 룰렛
+          </button>
+          <button style={styles.subButton} onClick={onCollection}>
+            📚 도감
+            {collectionStats.collected > 0 && (
+              <span style={styles.collectionCount}>
+                {collectionStats.collected}/{collectionStats.total}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -178,7 +209,7 @@ const styles = {
   },
   subButton: {
     flex: 1,
-    padding: '14px',
+    padding: '14px 6px',
     fontSize: '15px',
     backgroundColor: 'white',
     color: '#FF6A00',
@@ -186,6 +217,15 @@ const styles = {
     borderRadius: '14px',
     cursor: 'pointer',
     fontWeight: 'bold',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2px',
+  },
+  collectionCount: {
+    fontSize: '11px',
+    fontWeight: 600,
+    color: '#FF9A3C',
   },
   historyBox: {
     backgroundColor: '#f8f8f8',
