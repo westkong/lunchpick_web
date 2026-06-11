@@ -10,7 +10,7 @@ import { requestNotificationAgreement } from '@apps-in-toss/web-framework';
 // ✅ 승인 후 콘솔 → 스마트 발송 → 알림동의문에서 확인한 코드로 교체
 const NOTIFICATION_TEMPLATE_CODE = 'REPLACE_WITH_TEMPLATE_CODE';
 
-export default function HomePage({ onStart, onRoulette, onClaw, onCollection }) {
+export default function HomePage({ onStart, onRoulette, onClaw, onCollection, onBet }) {
   const [recent, setRecent] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [collectionStats, setCollectionStats] = useState({ collected: 0, total: MENUS.length });
@@ -69,6 +69,13 @@ export default function HomePage({ onStart, onRoulette, onClaw, onCollection }) 
           <span style={styles.heroTextWrap}>
             <span style={styles.heroTitle}>인형뽑기로 점심 뽑기</span>
             <span style={styles.heroSub}>오늘은 운명에 맡겨봐!</span>
+          </span>
+        </button>
+        <button style={styles.betButton} onClick={onBet}>
+          <span style={styles.betEmoji}>🎲</span>
+          <span style={styles.betTextWrap}>
+            <span style={styles.betTitle}>오늘 커피 누가 사?</span>
+            <span style={styles.betSub}>내기 뽑기로 정해요</span>
           </span>
         </button>
         <div style={styles.subButtonRow}>
@@ -201,6 +208,39 @@ const styles = {
   heroSub: {
     fontSize: '13px',
     opacity: 0.9,
+    fontWeight: 500,
+  },
+  betButton: {
+    width: '100%',
+    padding: '14px 20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    backgroundColor: 'white',
+    border: '2px solid #FF6A00',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    textAlign: 'left',
+    boxSizing: 'border-box',
+  },
+  betEmoji: {
+    fontSize: '28px',
+    flexShrink: 0,
+  },
+  betTextWrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+  },
+  betTitle: {
+    fontSize: '16px',
+    fontWeight: 900,
+    color: '#FF6A00',
+    letterSpacing: '-0.5px',
+  },
+  betSub: {
+    fontSize: '12px',
+    color: '#999',
     fontWeight: 500,
   },
   subButtonRow: {

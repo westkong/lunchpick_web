@@ -7,6 +7,7 @@ import ResultPage from './pages/ResultPage';
 import RoulettePage from './pages/RoulettePage';
 import ClawMachinePage from './pages/ClawMachinePage';
 import CollectionPage from './pages/CollectionPage';
+import BetPage from './pages/BetPage';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -26,6 +27,7 @@ export default function App() {
             onRoulette={() => setPage('roulette')}
             onClaw={() => setPage('claw')}
             onCollection={() => setPage('collection')}
+            onBet={() => setPage('bet')}
           />
         )}
         {page === 'claw' && (
@@ -36,6 +38,9 @@ export default function App() {
         )}
         {page === 'collection' && (
           <CollectionPage onBack={() => setPage('home')} />
+        )}
+        {page === 'bet' && (
+          <BetPage onHome={() => setPage('home')} />
         )}
         {page === 'condition' && (
           <ConditionPage onResult={handleResult} onBack={() => setPage('home')} />
