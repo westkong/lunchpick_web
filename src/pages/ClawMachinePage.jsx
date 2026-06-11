@@ -7,6 +7,8 @@ import { MENUS, CATEGORIES, ALL_CATEGORY, getMenuEmoji } from '../data/menuData'
 import { addToHistory } from '../services/historyService';
 import { addToCollection } from '../services/collectionService';
 import { maybeRequestReview } from '../services/reviewService';
+import { getRemainingPulls, consumePull, grantBonusPulls, AD_REWARD_PULLS } from '../services/pullLimitService';
+import { preloadRewardAd, showRewardAd } from '../services/adService';
 import { shareResult } from '../services/shareService';
 import Capsule, { colorForName } from '../components/Capsule';
 import NavBar from '../components/NavBar';
@@ -30,6 +32,8 @@ export default function ClawMachinePage({ onHome, onCollection }) {
   const [holding, setHolding] = useState(null); // 집게가 들고 있는 이모지
   const [result, setResult] = useState(null); // { name, emoji, ... }
   const [pile, setPile] = useState([]); // 통 안 음식 더미
+  const [remaining, setRemaining] = useState(getRemainingPulls); // 오늘 남은 뽑기
+  const [adLoading, setAdLoading] = useState(false);
   const swingRef = useRef(null);
   const timersRef = useRef([]);
 
@@ -82,10 +86,37 @@ export default function ClawMachinePage({ onHome, onCollection }) {
   // 컴포넌트 언마운트 시 타이머 정리
   useEffect(() => () => clearTimers(), []);
 
+  // 뽑기 횟수가 1회 이하로 남으면 리워드 광고 미리 로드
+  useEffect(() => {
+    if (remaining <= 1) preloadRewardAd();
+  }, [remaining]);
+
+  // 광고 보고 뽑기권 받기
+  function handleWatchAd() {
+    if (adLoading) return;
+    setAdLoading(true);
+    showRewardAd({
+      onReward: () => {
+        setRemaining(grantBonusPulls(AD_REWARD_PULLS));
+      },
+      onClose: () => {
+        setAdLoading(false);
+      },
+    });
+    // 브라우저 등에서 onClose가 안 올 수도 있으니 보험
+    later(() => setAdLoading(false), 1500);
+  }
+
   // 뽑기 시작!
   function handleGrab(attempt = 1) {
     if (phase !== 'idle' && phase !== 'failed') return;
+    if (attempt === 1 && remaining <= 0) return;
     if (swingRef.current) clearInterval(swingRef.current);
+
+    // 첫 시도에만 횟수 차감 (자동 재시도는 공짜)
+    if (attempt === 1) {
+      setRemaining(consumePull());
+    }
 
     // 뽑을 음식 미리 결정 (통 안 더미 중 하나)
     const targetIndex = Math.floor(Math.random() * pile.length);
@@ -296,16 +327,37 @@ export default function ClawMachinePage({ onHome, onCollection }) {
           </button>
         </div>
       ) : (
-        <button
-          style={{
-            ...styles.grabBtn,
-            opacity: busy ? 0.5 : 1,
-          }}
-          onClick={() => handleGrab(1)}
-          disabled={busy}
-        >
-          {busy ? '뽑는 중...' : '🎮 뽑기!'}
-        </button>
+        <div style={styles.grabArea}>
+          <p style={{
+            ...styles.remainingText,
+            color: remaining > 0 ? '#888' : '#FF6A00',
+          }}>
+            {remaining > 0 ? `오늘 남은 뽑기 ${remaining}회` : '오늘 무료 뽑기를 다 썼어요!'}
+          </p>
+          {remaining > 0 ? (
+            <button
+              style={{
+                ...styles.grabBtn,
+                opacity: busy ? 0.5 : 1,
+              }}
+              onClick={() => handleGrab(1)}
+              disabled={busy}
+            >
+              {busy ? '뽑는 중...' : '🎮 뽑기!'}
+            </button>
+          ) : (
+            <button
+              style={{
+                ...styles.adBtn,
+                opacity: adLoading ? 0.5 : 1,
+              }}
+              onClick={handleWatchAd}
+              disabled={adLoading}
+            >
+              {adLoading ? '광고 준비 중...' : `🎬 광고 보고 +${AD_REWARD_PULLS}회 뽑기`}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
@@ -529,8 +581,19 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
   },
+  grabArea: {
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '0 16px 20px',
+    flexShrink: 0,
+  },
+  remainingText: {
+    margin: '0 0 8px',
+    fontSize: '13px',
+    fontWeight: 600,
+    textAlign: 'center',
+  },
   grabBtn: {
-    margin: '4px 16px 20px',
     padding: '18px',
     fontSize: '19px',
     backgroundColor: '#FF6A00',
@@ -539,7 +602,17 @@ const styles = {
     borderRadius: '16px',
     cursor: 'pointer',
     fontWeight: 'bold',
-    flexShrink: 0,
     boxShadow: '0 6px 16px rgba(255,106,0,0.35)',
+  },
+  adBtn: {
+    padding: '18px',
+    fontSize: '18px',
+    background: 'linear-gradient(135deg, #7B61FF 0%, #4A90E2 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    boxShadow: '0 6px 16px rgba(123,97,255,0.35)',
   },
 };
