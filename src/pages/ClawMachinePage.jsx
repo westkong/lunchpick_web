@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MENUS, CATEGORIES, ALL_CATEGORY, getMenuEmoji } from '../data/menuData';
 import { addToHistory } from '../services/historyService';
 import { addToCollection } from '../services/collectionService';
+import { maybeRequestReview } from '../services/reviewService';
 import { shareResult } from '../services/shareService';
 import Capsule, { colorForName } from '../components/Capsule';
 import NavBar from '../components/NavBar';
@@ -142,6 +143,11 @@ export default function ClawMachinePage({ onHome, onCollection }) {
         addToHistory(target.name);
         refillPile();
       }, 800 + 700);
+
+      // 6) 결과를 충분히 본 뒤 리뷰 요청 (기분 좋은 순간!)
+      later(() => {
+        maybeRequestReview({ rare });
+      }, 800 + 700 + 2500);
     }, 700 + 900 + 700);
   }
 
