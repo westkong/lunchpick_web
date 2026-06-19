@@ -7,8 +7,9 @@ import { MENUS } from '../data/menuData';
 import Modal from '../components/Modal';
 import { requestNotificationAgreement } from '@apps-in-toss/web-framework';
 
-// ✅ 승인 후 콘솔 → 스마트 발송 → 알림동의문에서 확인한 코드로 교체
-const NOTIFICATION_TEMPLATE_CODE = 'REPLACE_WITH_TEMPLATE_CODE';
+// 기능성 캠페인 발송 코드 = templateCode (검수 승인 시 발급)
+// 콘솔 → 스마트 발송 → 기능성 → "기능성_점심추천" 의 발송 코드
+const NOTIFICATION_TEMPLATE_CODE = 'meokpick-LUNCH_FUNC_02';
 
 export default function HomePage({ onStart, onRoulette, onClaw, onCollection, onBet }) {
   const [recent, setRecent] = useState([]);
