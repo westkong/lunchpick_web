@@ -1,16 +1,79 @@
-# React + Vite
+# 🍽 먹픽 (Meokpick)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 점심 메뉴 추천 토스 미니앱
+> *A lunch-menu recommendation mini-app, shipped on App-in-Toss.*
 
-Currently, two official plugins are available:
+**📲 앱인토스에서 출시된 서비스입니다.** <!-- 앱인토스 링크가 있으면 여기에 추가: [앱인토스에서 보기](링크) -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📌 프로젝트 소개
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+"오늘 점심 뭐 먹지?"를 대신 정해주는 점심 메뉴 추천 미니앱입니다.
+React + Vite로 개발해 **앱인토스(App-in-Toss)에 직접 출시**했고, 사업자등록까지 직접 처리했습니다.
+기획부터 출시까지 단독으로 진행했습니다.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ 주요 기능
+
+| 기능 | 설명 |
+|---|---|
+| 🎲 메뉴 추천 | 점심 메뉴를 추천해주는 핵심 기능 |
+| 📱 토스 미니앱 | App-in-Toss 프레임워크로 토스 안에서 실행 |
+| 🚀 실제 출시 | 앱인토스 스토어에 배포된 운영 서비스 |
+
+> 기능 설명은 실제 앱 동작에 맞게 더 채워 넣으면 좋습니다.
+
+---
+
+## 🛠 기술 스택
+
+- **Frontend:** React 19, Vite
+- **플랫폼:** App-in-Toss (토스 미니앱)
+- **배포:** 앱인토스 스토어
+
+---
+
+## 🚀 실행 방법
+
+```bash
+# 1. 의존성 설치
+npm install
+
+# 2. 개발 서버 실행
+npm run dev
+
+# 3. 프로덕션 빌드 / 미리보기
+npm run build
+npm run preview
+```
+
+---
+
+## 📁 폴더 구조
+
+```
+lunchpick_web/
+├── public/              # 정적 파일
+├── src/                 # 프론트엔드 소스
+├── design/              # 디자인 자료
+├── docs/                # 문서
+├── meokpick.ait         # 앱인토스 배포 번들
+├── granite.config.ts    # 토스 미니앱(App-in-Toss) 설정
+└── package.json
+```
+
+---
+
+## 💡 개발 포인트
+
+- 개인 프로젝트를 **실제 스토어 출시**까지 끝낸 경험 (기획 → 개발 → 배포 → 사업자등록)
+- 앱인토스 플랫폼 제약 안에서 동작하는 미니앱 구조 설계
+
+---
+
+## 👤 만든 사람
+
+**이서빈 (westkong)** · 가톨릭대학교 인공지능학과
+GitHub: [@westkong](https://github.com/westkong)
